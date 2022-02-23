@@ -1,0 +1,24 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0",
+	"FriendlyName": "web3",
+	"Description": "eth web3 rpc",
+	"Category": "Other",
+	"CreatedBy": "liuyu",
+	"CreatedByURL": "https://github.com/chain-plus-game/unreal-web3",
+	"DocsURL": "",
+	"MarketplaceURL": "",
+	"SupportURL": "",
+	"CanContainContent": true,
+	"IsBetaVersion": true,
+	"IsExperimentalVersion": false,
+	"Installed": false,
+	"Modules": [
+		{
+			"Name": "web3",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		}
+	]
+}
