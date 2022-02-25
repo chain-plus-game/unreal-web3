@@ -2,6 +2,7 @@
 
 
 #include "Web3DemoCharacter.h"
+#include "Containers/UnrealString.h"
 #include <web3/Public/RpcEngineSys.h>
 
 // Sets default values
@@ -39,5 +40,8 @@ void AWeb3DemoCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 void AWeb3DemoCharacter::OnRpcCallBack(FString funcName, FString res)
 {
 	UE_LOG(LogTemp, Warning, TEXT("get rpc call back func:%s"), *funcName);
+	FResEthGetBalance data = FResEthGetBalance();
+	data.encode(res);
+	UE_LOG(LogTemp, Warning, TEXT("get rpc call back result:%s"), data.result);
 }
 

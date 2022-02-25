@@ -52,5 +52,4 @@ void URpcEngineSys::GetBalance(FString& address)
 	FReqEthGetBalance req = FReqEthGetBalance();
 	req.init(address);
 	CallRpc<FReqEthGetBalance>(req);
-	//DoReq(req.method,);
 }
