@@ -17,26 +17,23 @@ public:
 	UPROPERTY()
 		FString method;
 	UPROPERTY()
-		FString jsonrpc = TEXT("2.0");
+		FString jsonrpc = TEXT('2.0');
 
-	void init() {}
-
-	FString GetMethod() {
-		return method;
+	void decode(FString& outStr) {
+		FJsonObjectConverter::UStructToJsonObjectString(&this::StaticStruct(), this, outStr, 0, 0);
 	}
 };
 
 USTRUCT()
-struct FResBase {
-	GENERATED_USTRUCT_BODY()
-
-public:
+struct FResBase{
 	UPROPERTY()
 		int id;
 	UPROPERTY()
 		FString jsonrpc;
 
-	void encode(FString& inStr) {
-		FJsonObjectConverter::JsonObjectStringToUStruct(inStr, this, 0, 0);
-	}
-};
+	static FResBase encode(const FString& inStr){
+		FResBase msgStruct;
+		FJsonObjectConverter::JsonObjectStringToUStruct(inStr, &msgStruct, 0, 0);
+		return msgStruct;
+	} 	
+}
