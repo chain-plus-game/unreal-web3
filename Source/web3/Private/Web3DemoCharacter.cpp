@@ -4,6 +4,7 @@
 #include "Web3DemoCharacter.h"
 #include "Containers/UnrealString.h"
 #include <web3/Public/RpcEngineSys.h>
+#include <web3/Public/keccak.h>
 
 // Sets default values
 AWeb3DemoCharacter::AWeb3DemoCharacter()
@@ -21,6 +22,11 @@ void AWeb3DemoCharacter::BeginPlay()
 	rpc->rpcCallBack.AddDynamic(this, &AWeb3DemoCharacter::OnRpcCallBack);
 	FString address = TEXT("0xe5e0Bd2EdBa9a9AD09CBA7081c31272953Eb8948");
 	rpc->GetBalance(address);
+	Keccak keccak;
+	FString funcName = TEXT("double(int256)");
+	keccak.add(*funcName, funcName.Len());
+	FString myHash3 = keccak.getHash();
+	UE_LOG(LogTemp, Warning, TEXT("keccak hash is %s"), *myHash3);
 }
 
 // Called every frame
@@ -40,8 +46,9 @@ void AWeb3DemoCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 void AWeb3DemoCharacter::OnRpcCallBack(FString funcName, FString res)
 {
 	UE_LOG(LogTemp, Warning, TEXT("get rpc call back func:%s"), *funcName);
-	FResEthGetBalance data = FResEthGetBalance();
-	data.encode(res);
-	UE_LOG(LogTemp, Warning, TEXT("get rpc call back result:%s"), data.result);
+	FResEthGetBalance data;
+	FJsonObjectConverter::JsonObjectStringToUStruct(res, &data, 0, 0);
+	FString result = data.result;
+	UE_LOG(LogTemp, Warning, TEXT("get rpc call back result:%s"), *result);
 }
 

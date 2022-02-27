@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
-#include <Runtime/JsonUtilities/Public/JsonObjectConverter.h>
 #include "Base.generated.h"
 
 USTRUCT()
@@ -35,8 +34,4 @@ public:
 		int id;
 	UPROPERTY()
 		FString jsonrpc;
-
-	void encode(FString& inStr) {
-		FJsonObjectConverter::JsonObjectStringToUStruct(inStr, this, 0, 0);
-	}
 };
