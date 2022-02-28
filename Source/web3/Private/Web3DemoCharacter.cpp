@@ -22,10 +22,11 @@ void AWeb3DemoCharacter::BeginPlay()
 	rpc->rpcCallBack.AddDynamic(this, &AWeb3DemoCharacter::OnRpcCallBack);
 	FString address = TEXT("0xe5e0Bd2EdBa9a9AD09CBA7081c31272953Eb8948");
 	rpc->GetBalance(address);
-	Keccak keccak;
-	FString funcName = TEXT("double(int256)");
-	keccak.add(*funcName, funcName.Len());
-	FString myHash3 = keccak.getHash();
+	Keccak keccak(Keccak::Keccak256);
+	FString funcName = TEXT("baz(uint32,bool)");
+	keccak.add(TCHAR_TO_UTF8(*funcName), 16);
+
+	FString myHash3(keccak.getHash().c_str());
 	UE_LOG(LogTemp, Warning, TEXT("keccak hash is %s"), *myHash3);
 }
 
