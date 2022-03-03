@@ -3,7 +3,6 @@
 
 #include "Web3DemoCharacter.h"
 #include "Containers/UnrealString.h"
-#include <web3/Public/RpcEngineSys.h>
 #include <web3/Public/keccak.h>
 
 // Sets default values
@@ -18,8 +17,11 @@ AWeb3DemoCharacter::AWeb3DemoCharacter()
 void AWeb3DemoCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	URpcEngineSys* rpc = GEngine->GetEngineSubsystem<URpcEngineSys>();
-	rpc->rpcCallBack.AddDynamic(this, &AWeb3DemoCharacter::OnRpcCallBack);
+	EthRpc = GEngine->GetEngineSubsystem<URpcEngineSys>();
+	FString abiUrl = TEXT("https://raw.githubusercontent.com/chain-plus-game/MiracleWarGame/master/src/abstract/MiracleCard.json");
+	EthRpc->contractInitSuccess.AddDynamic(this, &AWeb3DemoCharacter::OnContractInitSuccess);
+	EthRpc->InitContract(TEXT("CardNFT"), abiUrl);
+	/*rpc->rpcCallBack.AddDynamic(this, &AWeb3DemoCharacter::OnRpcCallBack);
 	FString address = TEXT("0xe5e0Bd2EdBa9a9AD09CBA7081c31272953Eb8948");
 	rpc->GetBalance(address);
 	Keccak keccak(Keccak::Keccak256);
@@ -27,7 +29,7 @@ void AWeb3DemoCharacter::BeginPlay()
 	keccak.add(TCHAR_TO_UTF8(*funcName), 16);
 
 	FString myHash3(keccak.getHash().c_str());
-	UE_LOG(LogTemp, Warning, TEXT("keccak hash is %s"), *myHash3);
+	UE_LOG(LogTemp, Warning, TEXT("keccak hash is %s"), *myHash3);*/
 }
 
 // Called every frame
@@ -51,5 +53,11 @@ void AWeb3DemoCharacter::OnRpcCallBack(FString funcName, FString res)
 	FJsonObjectConverter::JsonObjectStringToUStruct(res, &data, 0, 0);
 	FString result = data.result;
 	UE_LOG(LogTemp, Warning, TEXT("get rpc call back result:%s"), *result);
+}
+
+void AWeb3DemoCharacter::OnContractInitSuccess(FString contractNames)
+{
+	FString toFunc = TEXT("");
+	EthRpc->CallContractFunc(toFunc,);
 }
 
