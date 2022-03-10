@@ -66,14 +66,29 @@ struct FContractFunc {
 	GENERATED_USTRUCT_BODY()
 
 public:
+	FContractFunc() {};
+	virtual ~FContractFunc() {};
+
 	UPROPERTY()
 		FString funcName;
 
-	void decode(FString& outData) {}
-	void encode(FString& inData) {}
-	int paramNum() {
+	virtual void decode(FString& outData) {}
+	virtual int paramNum() {
 		return 0;
 	}
+};
+
+USTRUCT()
+struct FContractFuncRes {
+	GENERATED_USTRUCT_BODY()
+
+public:
+	FContractFuncRes() {};
+	virtual ~FContractFuncRes() {};
+
+	UPROPERTY()
+		int id;
+	virtual void encode(FString& outData) {}
 };
 
 USTRUCT()
@@ -105,5 +120,6 @@ public:
 		Keccak keccak(Keccak::Keccak256);
 		keccak.add(TCHAR_TO_UTF8(*hashString), hashString.Len());
 		funcHash = keccak.getHash().c_str();
+		funcHash = TEXT("0x") + funcHash.Left(8);
 	}
 };

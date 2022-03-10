@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include <web3/Static/TypeStructure.h>
-#include <web3/Public/RpcEngineSys.h>
+#include <web3/Public/Web3RpcEngineSys.h>
 #include "Web3DemoCharacter.generated.h"
 
 UCLASS()
@@ -18,7 +18,7 @@ public:
 	AWeb3DemoCharacter();
 
 	UPROPERTY()
-		URpcEngineSys* EthRpc;
+		UWeb3RpcEngineSys* EthRpc;
 
 protected:
 	// Called when the game starts or when spawned

@@ -2,7 +2,7 @@
 
 #include "web3.h"
 #include "ISettingsModule.h"
-#include <web3/Public/RpcEngineSys.h>
+#include <web3/Public/Web3RpcEngineSys.h>
 #define LOCTEXT_NAMESPACE "Fweb3Module"
 
 void Fweb3Module::StartupModule()
@@ -13,7 +13,7 @@ void Fweb3Module::StartupModule()
 		SettingModule->RegisterSettings("Project", "Plugins", "Web3",
 			LOCTEXT("RuntimeSettingsName", "Web3"),
 			LOCTEXT("RuntimeSettingsDescription", "Configure web3"),
-			GetMutableDefault<URpcEngineSys>()
+			GetMutableDefault<UWeb3RpcEngineSys>()
 		);
 	}
 }

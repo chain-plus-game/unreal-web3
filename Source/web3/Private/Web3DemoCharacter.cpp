@@ -17,7 +17,7 @@ AWeb3DemoCharacter::AWeb3DemoCharacter()
 void AWeb3DemoCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	EthRpc = GEngine->GetEngineSubsystem<URpcEngineSys>();
+	EthRpc = GEngine->GetEngineSubsystem<UWeb3RpcEngineSys>();
 	FString abiUrl = TEXT("https://raw.githubusercontent.com/chain-plus-game/MiracleWarGame/master/src/abstract/MiracleCard.json");
 	EthRpc->contractInitSuccess.AddDynamic(this, &AWeb3DemoCharacter::OnContractInitSuccess);
 	EthRpc->InitContract(TEXT("CardNFT"), abiUrl);
@@ -57,7 +57,7 @@ void AWeb3DemoCharacter::OnRpcCallBack(FString funcName, FString res)
 
 void AWeb3DemoCharacter::OnContractInitSuccess(FString contractNames)
 {
-	FString toFunc = TEXT("");
-	EthRpc->CallContractFunc(toFunc,);
+	FContractFunc toFunc;
+	EthRpc->CallContractFunc(contractNames, toFunc);
 }
 

@@ -18,11 +18,16 @@ public:
 	UPROPERTY()
 		FString jsonrpc = TEXT("2.0");
 
+	UPROPERTY()
+		bool notJson = false;
+
 	void init() {}
 
 	FString GetMethod() {
 		return method;
 	}
+
+	void decode(FString& outStr){}
 };
 
 USTRUCT()

@@ -27,6 +27,7 @@ public class web3 : ModuleRules
                 "Json",
                 "JsonUtilities",
                 "Http",
+                "WebSockets"
             }
             );
 
@@ -38,6 +39,7 @@ public class web3 : ModuleRules
                 "Engine",
                 "Slate",
                 "SlateCore",
+                "WebSockets"
             }
             );
 

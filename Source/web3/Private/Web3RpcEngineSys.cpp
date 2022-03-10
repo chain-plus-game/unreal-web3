@@ -1,18 +1,18 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "RpcEngineSys.h"
+#include "Web3RpcEngineSys.h"
 #include "HttpModule.h"
 #include "Interfaces/IHttpResponse.h"
 #include <web3/Static/Contract.h>
 
 DEFINE_LOG_CATEGORY(Web3RPC);
 
-URpcEngineSys::URpcEngineSys(const FObjectInitializer& obj) {
+UWeb3RpcEngineSys::UWeb3RpcEngineSys(const FObjectInitializer& obj) {
 	ETHRpcUrl = TEXT("https://bsc-dataseed1.binance.org/");
 }
 
-void URpcEngineSys::DoReq(FString method, FString& req)
+void UWeb3RpcEngineSys::DoReq(FString method, FString& req)
 {
 	TSharedRef<IHttpRequest, ESPMode::ThreadSafe> HttpRequest = FHttpModule::Get().CreateRequest();
 	//设置Header
@@ -46,18 +46,31 @@ void URpcEngineSys::DoReq(FString method, FString& req)
 	rpcId++;
 }
 
-void URpcEngineSys::GetProtocolVersion()
+void UWeb3RpcEngineSys::OnConnected()
 {
 }
 
-void URpcEngineSys::GetBalance(FString& address)
+void UWeb3RpcEngineSys::OnConnectionError(const FString& Error)
+{
+}
+
+void UWeb3RpcEngineSys::GetProtocolVersion()
+{
+}
+
+void UWeb3RpcEngineSys::Initialize(FSubsystemCollectionBase& Collection) {
+	FModuleManager::Get().LoadModuleChecked("WebSockets");
+}
+
+
+void UWeb3RpcEngineSys::GetBalance(FString& address)
 {
 	FReqEthGetBalance req = FReqEthGetBalance();
 	req.init(address);
 	CallRpc<FReqEthGetBalance>(req);
 }
 
-void URpcEngineSys::InitContract(FString contractName, FString abiUrl)
+void UWeb3RpcEngineSys::InitContract(FString contractName, FString abiUrl)
 {
 	TSharedRef<IHttpRequest, ESPMode::ThreadSafe> HttpRequest = FHttpModule::Get().CreateRequest();
 	//设置Header
@@ -97,11 +110,16 @@ void URpcEngineSys::InitContract(FString contractName, FString abiUrl)
 	HttpRequest->ProcessRequest();
 }
 
-void URpcEngineSys::CallContractFunc(FString contractName, FContractFunc& contractFunc)
+void UWeb3RpcEngineSys::CallContractFunc(FString contractName, FContractFunc& contractFunc)
 {
 	check(_contractMap.Contains(contractName));
 	FContract _contract = _contractMap[contractName];
 	FString hash;
 	_contract.FuncHash(contractName, hash, contractFunc.paramNum());
+	FString funcData;
+	contractFunc.decode(funcData);
+	funcData = hash + funcData;
+	FReqBase req = FReqBase();
+	req.method = TEXT("eth_call");
 	UE_LOG(Web3RPC, Warning, TEXT("call to %s func, hash is %s"), *contractName, *hash);
 }
