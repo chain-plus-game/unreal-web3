@@ -8,6 +8,11 @@
 #include <web3/Static/Base.h>
 #include "TypeStructure.generated.h"
 
+#define status_success "success"
+
+#define wsfunc_init_contract "init_contract"
+#define wsfunc_call "call"
+
 #define eth_protocolVersion "eth_protocolVersion"
 #define eth_getBalance "eth_getBalance"
 #define eth_call "eth_call"
@@ -39,7 +44,6 @@ public:
 
 	UPROPERTY()
 		FString result;
-
 };
 
 USTRUCT()
@@ -78,4 +82,48 @@ public:
 	void decode(FString& outStr) {
 
 	}
+};
+
+
+USTRUCT()
+struct FWsResBase {
+	GENERATED_USTRUCT_BODY()
+
+public:
+	UPROPERTY()
+		FString callBack;
+
+	UPROPERTY()
+		FString data;
+
+	UPROPERTY()
+		FString messsag;
+};
+
+USTRUCT()
+struct FWsReqBase {
+	GENERATED_USTRUCT_BODY()
+
+public:
+	UPROPERTY()
+		FString func;
+
+	UPROPERTY()
+		FString data;
+
+	UPROPERTY()
+		FString messsag;
+};
+
+USTRUCT()
+struct FWsInitContract {
+	GENERATED_USTRUCT_BODY()
+
+public:
+
+	UPROPERTY()
+		FString address;
+
+	UPROPERTY()
+		FString abi_url;
 };

@@ -13,26 +13,33 @@
 
 DECLARE_LOG_CATEGORY_EXTERN(Web3RPC, Log, All);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FJsonRpcCallBack, FString, funcName, FString, res);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FContractInitSuccess, FString, contractName);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FContractInitSuccess, FString, contractAddress);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FWsServerCallBack, FString, funcName, FString, data, FString, message);
 
 /**
  *
  */
-UCLASS(Config = Web3)
+UCLASS(Config = Web3, defaultconfig, meta = (DisplayName = "Web3Rpc"))
 class WEB3_API UWeb3RpcEngineSys : public UEngineSubsystem
 {
 	GENERATED_BODY()
 
 		UWeb3RpcEngineSys(const FObjectInitializer& obj);
 
-	UPROPERTY(Config)
+	UPROPERTY(Config, EditAnywhere, Category = Settings)
 		FString ETHRpcUrl;
+
+	UPROPERTY(Config, EditAnywhere, Category = Settings)
+		FString ServerURL;
+
+	UPROPERTY(Config, EditAnywhere, Category = Settings)
+		FString ServerProtocol;
 
 	UPROPERTY()
 		int rpcId;
 
 	UPROPERTY()
-		TMap<FString, FContract> _contractMap;
+		TArray<FString> _contractArray;
 
 public:
 	UPROPERTY()
@@ -41,7 +48,11 @@ public:
 	UPROPERTY()
 		FContractInitSuccess contractInitSuccess;
 
+	UPROPERTY()
+		FWsServerCallBack wsCallBack;
+
 	TSharedPtr<IWebSocket> Socket = nullptr;
+
 private:
 
 	template<typename T>
@@ -58,7 +69,20 @@ private:
 		DoReq(method, body);
 	}
 
+	template<typename T>
+	void WsCall(FString funcName, T data) {
+		FWsReqBase req;
+		FString body;
+		FJsonObjectConverter::UStructToJsonObjectString(T::StaticStruct(), &data, body, 0, 0);
+		req.func = funcName;
+		req.data = body;
+		FString message;
+		FJsonObjectConverter::UStructToJsonObjectString(T::StaticStruct(), &req, message, 0, 0);
+		WsSend(message);
+	}
+
 	void DoReq(FString method, FString& req);
+	void WsSend(FString& message);
 
 protected:
 
@@ -66,7 +90,7 @@ protected:
 	void OnConnectionError(const FString& Error);
 	void OnClosed(int32 StatusCode, const FString& Reason, bool bWasClean);
 	void OnMessage(const FString& Message);
-	void OnMessageSent(const FString& MessageString); 
+	void OnMessageSent(const FString& MessageString);
 
 public:
 
@@ -79,10 +103,9 @@ public:
 		void GetBalance(FString& address);
 
 	UFUNCTION(BlueprintCallable, Category = "Web3")
-		void InitContract(FString contractName, FString abiUrl);
+		void InitContract(FString abiUrl, FString address);
 
-	UFUNCTION()
-		void CallContractFunc(FString contractName, FContractFunc& contractFunc);
-
+	UFUNCTION(BlueprintCallable, Category = "Web3")
+		void OnInitContractCallback(FString funcName, FString data, FString message);
 
 };

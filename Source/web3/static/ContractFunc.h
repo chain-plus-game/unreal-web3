@@ -10,7 +10,7 @@
 
 
 USTRUCT()
-struct FERC20BalanceOf :public FContractFunc {
+struct FERC20BalanceOf {
 
 	GENERATED_USTRUCT_BODY()
 public:
@@ -19,16 +19,5 @@ public:
 		FString ownerAddress;
 
 	FERC20BalanceOf() {
-		funcName = TEXT("balanceOf");
 	};
-	void decode(FString& outData) override {
-		check(ownerAddress.Len() == 42);
-		FString _address = ownerAddress.RightChop(2);
-		// ²¹ 64-42 ¸öÁã
-		outData += TEXT("000000000000000000000000");
-		outData += _address;
-	}
-	int paramNum() override {
-		return 1;
-	}
 };
